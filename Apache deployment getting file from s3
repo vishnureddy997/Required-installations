@@ -1,0 +1,7 @@
+FROM ubuntu:18.04
+RUN apt-get update
+RUN apt-get install apache2 -y
+ADD https://test-s3-vishnu.s3.ap-south-1.amazonaws.com/index.html  /var/www/html
+RUN chmod 777 -R /var/www/html/index.html
+EXPOSE 80
+CMD ["apachectl", "-D", "FOREGROUND"]
