@@ -1,0 +1,14 @@
+node {
+  
+    stage ("git") {
+        
+    git branch: 'main', credentialsId: 'd3991f5c-9c29-4e40-9eb7-17d40ce7f8bc', url: 'https://gitlab.com/vishnuvardhan997/jenkin-docker.git'
+}
+     
+     stage ("Build docker image"){
+         sh "sudo apt-get update"
+         sh "sudo apt install docker.io -y"
+        sh "sudo docker build -t apache . "
+        sh " sudo docker run -d -p 80:80  apache "
+    }
+}
