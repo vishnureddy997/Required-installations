@@ -1,0 +1,8 @@
+FROM ubuntu:latest
+RUN apt-get update
+RUN apt install openjdk-11-jdk -y
+RUN apt install python3 -y
+RUN apt install nodejs -y
+RUN apt install npm -y
+RUN npm -g install create-react-app
+RUN npm install -g @angular/cli@9
