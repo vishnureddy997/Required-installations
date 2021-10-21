@@ -1,0 +1,26 @@
+pipeline { 
+    agent any
+    stages {     
+        stage ("Git Checkout"){ 
+            steps {
+            script {
+                    checkout([
+                        $class: 'GitSCM',
+                        branches: [[name: "master"]],
+                        doGenerateSubmoduleConfigurations: false,
+                        extensions: [[
+                            $class: 'PathRestriction', excludedRegions: '', includedRegions: 'devops',
+                            relativeTargetDir: "/tmp/jenkins/devops"
+                        ]],
+                        submoduleCfg: [],
+                        userRemoteConfigs: [[
+                            credentialsId: 'a95cee46-1fb9-435a-9397-a5aed979e5ba',
+                            url: 'https://github.com/rajeshpalle123/dt.git'
+                        ]]
+                    ])
+                
+                }
+            }
+        } 
+    }
+}
