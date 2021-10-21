@@ -1,0 +1,16 @@
+Medium server
+sudo su -
+cd /opt
+apt install wget unzip -y
+apt install openjdk-11-jre-headless 
+wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-8.9.1.44547.zip
+ unzip sonarqube-8.9.1.44547.zip
+useradd sonar
+ chown -R sonar:sonar /opt/sonarqube-8.9.1.44547/
+ chmod -R 775 /opt/sonarqube-8.9.1.44547/
+ su - sonar
+ cd sonarqube-8.9.1.44547
+cd bin
+cd linux-x86-64
+sh sonar.sh start
+sh sonar.sh status
