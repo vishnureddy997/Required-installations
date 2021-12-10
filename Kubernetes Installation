@@ -38,3 +38,13 @@ systemctl restart containerd
 kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
 
 
+
+sudo au -
+kubeadm init
+
+if error comes 
+
+
+sudo kubeadm init --cri-socket /rub/containered/containered.sock
+
+
