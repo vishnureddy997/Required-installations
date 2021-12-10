@@ -47,4 +47,9 @@ if error comes
 
 sudo kubeadm init --cri-socket /run/containerd/containerd.sock
 
+after in master 
+
+kubectl get pods -o wide -n kube-system
+
+kubeadm token create --print-join-command
 
