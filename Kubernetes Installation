@@ -45,6 +45,6 @@ kubeadm init
 if error comes 
 
 
-sudo kubeadm init --cri-socket /rub/containered/containered.sock
+sudo kubeadm init --cri-socket /run/containerd/containerd.sock
 
 
