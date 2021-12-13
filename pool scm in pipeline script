@@ -14,4 +14,45 @@ node {
  
  
  
+ pipeline {
+    agent any
+    triggers {
+        pollSCM 'H/2 * * * *'
+    }
+    stages {
+        stage('checkout') {
+            steps {
+    
+  checkout([
+       $class: 'GitSCM', 
+       branches: [[name: "*/master"]], 
+       doGenerateSubmoduleConfigurations: false, 
+       extensions: [[$class: 'CleanCheckout']], 
+       submoduleCfg: [], 
+       userRemoteConfigs: [[credentialsId:'github creds',url: 'https://github.com/vishnureddy997/practice.git']]
+   ])
+ }
+}
+
+
+pipeline {
+    agent any
+    stages {
+        stage('Initialize') {
+            steps {
+                //enable remote triggers
+                script {
+                    properties([pipelineTriggers([pollSCM('H/2 * * * *')])])
+                }
+                //define scm connection for polling
+                git credentialsId: '85bd0554-5677-4232-8d6c-89c97b3ec50e', url: 'https://github.com/vishnureddy997/practice.git'
+            }
+        }
+    }
+}
+  
+ 
+ 
+ 
+ 
  
