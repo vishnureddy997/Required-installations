@@ -1,0 +1,17 @@
+node {
+  checkout([
+       $class: 'GitSCM', 
+       branches: [[name: "*/master"]], 
+       doGenerateSubmoduleConfigurations: false, 
+       extensions: [[$class: 'CleanCheckout']], 
+       submoduleCfg: [], 
+	   spec: pipelineTriggers([cron('H/2 * * * *')]),
+       userRemoteConfigs: [[credentialsId:'github creds',url: 'https://github.com/vishnureddy997/practice.git']]
+   ])
+ }
+ 
+ 
+ 
+ 
+ 
+ 
