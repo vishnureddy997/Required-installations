@@ -68,3 +68,11 @@ kubectl get pods -o wide -n kube-system
 
 kubeadm token create --print-join-command
 
+kubectl expose ReplicationController nginx-rc --port=80 --type=NodePort
+
+
+scale up and scale down services 
+
+kubectl scale servicename (kind ) podname (metadata) --replicas number
+
+
