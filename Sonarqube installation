@@ -2,6 +2,7 @@ Medium server
 sudo su -
 cd /opt
 apt install wget unzip -y
+apt-get update
 apt install openjdk-11-jre-headless 
 wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-8.9.1.44547.zip
  unzip sonarqube-8.9.1.44547.zip
