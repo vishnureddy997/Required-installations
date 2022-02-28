@@ -1,0 +1,25 @@
+events{
+   worker_connections 1024;
+}
+
+http {
+ keepalive_timeout  5;
+ upstream nginxServers  {
+    keepalive 50;
+    server 35.154.49.136:80;
+    server 52.66.206.174:80;
+ }
+ server {
+    listen 80;
+    location / {
+            proxy_set_header     X-Real-IP $remote_addr;
+            proxy_set_header     X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header     X-Forwarded-Proto $scheme;
+            proxy_set_header     Host $host;
+            proxy_pass http://nginxServers;
+
+
+}
+}
+}
+
