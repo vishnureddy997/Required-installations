@@ -1,0 +1,6 @@
+#! /bin/bash
+DIR=`date +%d-%m-%y`
+export access_key= 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
+git clone https://vishnureddy997:$access_key@github.com/vishnureddy997/test11.git
+sudo docker build -t tesa1kaaa_$DIR .
+sudo docker run -dt -p 80:80  --name  tesa1kaaa_$DIR  tesa1kaaa_$DIR
