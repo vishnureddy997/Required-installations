@@ -1,0 +1,79 @@
+FROM ubuntu:latest
+
+MAINTAINER "vishnu"
+
+RUN apt-get update
+
+RUN apt install nginx -y
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
+
+
+
+
+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
+
+
+
+https://github.com/vishnureddy997/test11.git
+
+
+git clone https://vishnureddy997:$github_access_token@github.com/1stmain/magnifi-mobile-test.git
+
+
+
+git_access_token
+
+
+git clone https://vishnureddy997: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@github.com/vishnureddy997/test11.git
+
+
+git clone git://vishnureddy997@github.com/vishnureddy997/test11.git
+
+git clone https://1stmain:$github_access_token@github.com/1stmain/magnifi-mobile-test.git
+
+
+
+git clone https://1stmain:$github_access_token@github.com/1stmain/magnifi-mobile-test.git
+
+
+
+
+RUN apt install docker.io -y
+RUN docker cp Dockerfile nginx:/test
+
+
+
+| mail -s "Backup Success" vishnureddy14ma@gmail.com
+
+
+
+[smtp.gmail.com]:587 vishnureddy14ma@gmail.com:Reddy@12345
+
+
+MAILTO=vishnureddy14ma@gmail.com
+* * * * * /home/ubuntu/name.sh >> /tmp/queue.output
+
+"smtp_tls_wrappermode = yes"
+
+netstat -nutlap | grep 25
+
+change MAIL_DRIVER=smtp to MAIL_DRIVER=sendmail in ".env" file
+
+ip-172-31-37-52  ip-172-31-44-6
+
+
+smtp_sasl_auth_enable = yes
+smtp_sasl_security_options = noanonymous
+smtp_sasl_password_maps = hash:/etc/postfix/sasl/sasl_passwd
+smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+
+
+
+
+
+$mail->SMTPSecure = 'tls';
+  $mail->Host = 'smtp.gmail.com';
+  $mail->Port = '587';
