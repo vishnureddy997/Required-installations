@@ -1,0 +1,255 @@
+  pipeline 
+
+
+node {
+    stage ("Gitclone") {
+        git branch: 'main', credentialsId: 'f2138ffc-6262-4087-abd4-72fbcc1ec9b5', url: 'https://gitlab.com/vishnuvardhan997/jenkins_docker.git'
+    }
+    
+    stage ("Build docker image"){
+        sh " docker build -t tomcat . "
+    }
+    
+    stage ("Run docker image") {
+        sh "docker run -d -p 8080:8080 --name tomcatcon1122 tomcat"
+    }
+    
+    stage ("docker login") {
+    withCredentials([string(credentialsId: '3d6f91e7-c5ec-40e7-a974-7772e0aaabad', variable: 'Docker_passwd')]) {
+    // some block
+    sh "docker login -u dockerrepository123 -p ${Docker_passwd}"
+}
+}
+
+    stage ("Dockertag") {
+        sh "docker tag tomcat dockerrepository123/name:latest "
+    }
+    
+    stage ("Dockerpush") {
+        sh "docker push dockerrepository123/name:latest"
+    }
+}
+
+
+
+  Tomcat using base image as tomcat
+
+
+
+FROM tomcat:8.0-alpine
+
+MAINTAINER "vishnu"
+
+ADD https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/sample.war /usr/local/tomcat/webapps/
+
+EXPOSE 8080
+
+CMD ["catalina.sh", "run"]
+
+
+
+
+tomcat base image as ubuntu
+
+
+
+FROM ubuntu:latest
+RUN apt-get -y update && apt-get -y upgrade
+RUN apt-get -y install openjdk-11-jdk wget
+RUN mkdir /usr/local/tomcat
+RUN wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.52/bin/apache-tomcat-9.0.52.tar.gz -O /tmp/tomcat.tar.gz
+RUN cd /tmp && tar xvfz tomcat.tar.gz
+RUN cp -Rv /tmp/apache-tomcat-9.0.52/* /usr/local/tomcat/
+ADD https://test-s3-vishnu.s3.ap-south-1.amazonaws.com/sample.war /usr/local/tomcat/webapps/
+EXPOSE 8080
+CMD /usr/local/tomcat/bin/catalina.sh run
+
+
+
+  Apache deployment
+
+
+FROM ubuntu:18.04
+RUN apt-get update
+RUN apt-get install apache2 -y
+ADD https://test-s3-vishnu.s3.ap-south-1.amazonaws.com/index.html  /var/www/html
+RUN chmod 777 -R /var/www/html/index.html
+EXPOSE 80
+CMD ["apachectl", "-D", "FOREGROUND"]
+
+
+docker jenkins pipeline script
+
+
+node {
+    stage ("update"){
+        sh "sudo apt-get update"
+    }
+    stage("updating") {
+        sh "sudo apt install docker.io -y"
+    }
+    stage ("git") {
+        
+    git branch: 'main', credentialsId: 'd3991f5c-9c29-4e40-9eb7-17d40ce7f8bc', url: 'https://gitlab.com/vishnuvardhan997/jenkin-docker.git'
+}
+     
+     stage ("Build docker image"){
+        sh "sudo docker build -t apache . "
+    }
+    
+    stage ("Run docker image") {
+        sh " sudo docker run -d -p 80:80  apache "
+    }
+    
+   
+}
+
+
+Nginx installation
+   
+
+FROM ubuntu:latest
+
+MAINTAINER "vishnu"
+
+RUN apt-get update
+
+RUN apt install nginx -y
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
+
+
+
+python installation
+
+
+FROM ubuntu:latest
+RUN apt-get update
+RUN apt install openjdk-11-jdk -y
+FROM python:3
+WORKDIR /usr/src/app
+COPY requirements.txt ./
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+COPY . .
+CMD [ "python", "./your-daemon-or-script.py" ]
+~
+
+
+  postgresql
+     
+
+USER postgres
+RUN    /etc/init.d/postgresql start &&\
+    psql --command "CREATE USER docker WITH SUPERUSER PASSWORD 'docker';" &&\
+    createdb -O docker docker
+RUN /etc/init.d/postgresql restart
+RUN /etc/init.d/postgresql start
+RUN chmod 777 -R /var/run/postgresql/postgress
+RUN /etc/init.d/postgresql restart
+
+
+
+nodejs
+
+
+
+FROM ubuntu:latest
+RUN apt-get update
+RUN apt install openjdk-11-jdk -y
+RUN apt install python3 -y
+RUN apt install nodejs -y
+RUN apt install npm -y
+RUN npm -g install create-react-app
+RUN npm install -g @angular/cli@9
+
+
+ build only one file 
+
+
+
+
+pipeline { 
+    agent any
+    stages {     
+        stage ("Git Checkout"){ 
+            steps {
+            script {
+                    checkout([
+                        $class: 'GitSCM',
+                        branches: [[name: "master"]],
+                        doGenerateSubmoduleConfigurations: false,
+                        extensions: [[
+                            $class: 'PathRestriction', excludedRegions: '', includedRegions: 'devops',
+                            relativeTargetDir: "/tmp/jenkins/devops"
+                        ]],
+                        submoduleCfg: [],
+                        userRemoteConfigs: [[
+                            credentialsId: 'a95cee46-1fb9-435a-9397-a5aed979e5ba',
+                            url: 'https://github.com/rajeshpalle123/dt.git'
+                        ]]
+                    ])
+                
+                }
+            }
+        } 
+    }
+}
+
+
+
+jenkins
+
+node {
+  
+    stage ("git") {
+        
+    git branch: 'main', credentialsId: 'd3991f5c-9c29-4e40-9eb7-17d40ce7f8bc', url: 'https://gitlab.com/vishnuvardhan997/jenkin-docker.git'
+}
+     
+     stage ("Build docker image"){
+         sh "sudo apt-get update"
+         sh "sudo apt install docker.io -y"
+        sh "sudo docker build -t apache . "
+        sh " sudo docker run -d -p 80:80  apache "
+    }
+}
+
+
+
+SonarQube Installation 
+
+
+
+sudo su -
+cd /opt
+apt install wget unzip -y
+apt install openjdk-11-jre-headless 
+wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-8.9.1.44547.zip
+ unzip sonarqube-8.9.1.44547.zip
+useradd sonar
+ chown -R sonar:sonar /opt/sonarqube-8.9.1.44547/
+ chmod -R 775 /opt/sonarqube-8.9.1.44547/
+ su - sonar
+ cd sonarqube-8.9.1.44547
+cd bin
+cd linux-x86-64
+sh sonar.sh start
+sh sonar.sh status
+
+def mavenHome= tool name: 'maven3.8.2'
+
+sh "${mavenHome}/bin/mvn clean package"
+
+sh "${mavenHome}/bin/mvn sonar:sonar"
+
+
+
+
+
+
+
+
+

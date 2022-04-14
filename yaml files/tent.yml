@@ -1,0 +1,15 @@
+{
+  "Resources": {
+    "ExampleInstance": {
+      "Type" : "AWS::EC2::Instance",
+      "Properties" : {
+        "ImageId": "ami-03a0c45ebc70f98ea",
+        "InstanceType": "t2.micro",
+        "Tenancy": "default",
+        "Tags": [{ "Key": "Name", "Value": "Example Instance" }],
+        "SecurityGroupIds": ["sg-1234567890abcdefg"],
+        "KeyName": "test"
+      }
+    }
+  }
+}

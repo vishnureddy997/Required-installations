@@ -1,0 +1,122 @@
+AWSTemplateFormatVersion: 2010-09-09
+Parameters:
+  InstanceTypeParameter:
+    Type: String
+    Default: t2.micro
+    Description: Enter instance size. Default is t3a.medium.
+  AMI:
+    Type: String
+    Default: ami-08ee6644906ff4d6c
+    Description: The Windows AMI to use.
+  Key:
+    Type: String
+    Description: The key used to access the instance.
+Resources:
+  InstanceSecurityGroup5:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Join ["-", [webapp-security-group5, teee]]
+      GroupDescription: "Allow HTTP/HTTPS and SSH inbound and outbound traffic"
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+  Windows1:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      ImageId: !Ref AMI
+      InstanceType:
+        Ref: InstanceTypeParameter
+      KeyName: !Ref Key
+    Type: 'AWS::EC2::Instance'
+    Metadata:
+      'AWS::CloudFormation::Init':
+        configSets:
+          Provision:
+            - DownloadPackages
+            - RenderConfig
+        DownloadPackages:
+          commands:
+            01_download_infra_bundle:
+              command: !Sub |
+                #!/usr/bin/env bash
+                set -o nounset
+                set -o errexit
+
+                BASE="/opt/provisioner"
+                export PATH="$PATH:/usr/local/bin:$BASE/bin"
+
+                INFRA_BUNDLE="${InfraBundleS3URL}"
+
+                if [[ "$INFRA_BUNDLE" == "DISABLED" ]]; then
+                  echo "=> [${StackSlug}] Skipping infrastructure bundle download because disabled."
+                  exit 0
+                fi
+
+                download_infra_bundle() {
+                  local archive="bundle.tar"
+                  cd "$BASE/../"
+                  aws s3 cp "$INFRA_BUNDLE" "$archive"
+                  tar -xf "$archive"
+                  rm -rf "$archive"
+                }
+
+                get_linux_name() {
+                  local name="Generic"
+                  if [[ -f /etc/os-release ]]; then
+                    name=$(grep -E '^NAME=' </etc/os-release | cut -d = -f 2 | sed ';s;";;g')
+                  fi
+                  echo "$name"
+                }
+
+                patch_bundle_changes() {
+                  if [[ "$(get_linux_name)" != "Ubuntu" ]]; then
+                    echo "=> [${StackSlug}] Skipped bundle patches since OS is not Ubuntu"
+                    return 0
+                  fi
+                  sed -i.bak ';s;export PATH="$BASE/bin:$BASE/venv/bin:/usr/local/bin:$PATH";export PATH="$PATH:/usr/local/bin:$BASE/bin";g' "$BASE/bin/sai_manage_infra"
+                  sed -i.bak ';s;#!/opt/provisioner/venv/bin/python3;#!/usr/bin/env python3;g' "$BASE/devops/terraform/cloud/generate_tfvars"
+                  sed -i.bak ';s;#!/opt/provisioner/venv/bin/python3;#!/usr/bin/env python3;g' "$BASE/devops/terraform/cloud/generate_mock_state"
+                }
+
+                download_infra_bundle
+                patch_bundle_changes
+        RenderConfig:
+          files:
+            '/opt/provisioner/config.ini':
+              content:
+                Fn::Sub:
+                  - |
+                    [common]
+                    name = ${StackSlug}
+                    stack_name = ${AWS::StackName}
+                    stack_id = ${AWS::StackId}
+                    stack_role = edss
+                    license_key = ${LicenseKey}
+                    replicated_license_url = DUMMY
+                    region = ${AWS::Region}
+                    account_id = ${AWS::AccountId}
+                    namespace = ${KubernetesNamespace}
+                    custom_tag = ${CustomTagParam}
+                    kubeconfig_s3_url = ${KubeconfigS3URL}
+                    alert_webhook = DISABLED
+                    domain_name = dummy.domain
+                    prometheus_url = DISABLED
+                    [control-vm]
+                    iam_role = ${ControlVMIAMRole}
+                    security_group_access = 10.110.0.0/16
+                    key_pair_name = ${ControlVMKeyPairName}
+                    public_subnet_id = ${ControlVMPublicSubnetID}
+                    security_group_id = ${ControlVMSecurityGroupID}
+                    ami_id = ${SecuritiControlVMAMIId}                   
+      SecurityGroupIds:
+        - Ref: InstanceSecurityGroup5

@@ -1,0 +1,45 @@
+Resources:
+  LogstashInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      IamInstanceProfile:
+        Ref: LogstashInstanceProfile                 
+      InstanceType: t2.micro
+      KeyName: mumbai
+      ImageId: ami-08ee6644906ff4d6c
+      SecurityGroupIds:
+        - Ref: LogstashSecurityGroup 
+      Tags:
+        - Key: Name
+          Value: Logstash Instance      
+  LogstashLaunchConfiguration:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties:  
+      EbsOptimized: false
+      IamInstanceProfile:
+        Ref: LogstashInstanceProfile
+      ImageId: ami-08ee6644906ff4d6c
+      InstanceMonitoring: true
+      InstanceType: t2.micro
+      KeyName: mumbai
+      LaunchConfigurationName: LogstashLaunchConfiguration
+      SecurityGroups: 
+        - Ref: LogstashSecurityGroup                                        
+  LogstashAutoScalingGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties: 
+      AutoScalingGroupName: LogstashAutoScalingGroup
+      AvailabilityZones: 
+        - ap-south-1a
+      DesiredCapacity: 1        
+      LaunchConfigurationName:
+        Ref: LogstashLaunchConfiguration
+      MaxSize: 2
+      MinSize: 1
+      Tags: 
+        - Key: Name
+          PropagateAtLaunch: "false"
+          Value: Logstash ASG 
+        - Key: Instances
+          PropagateAtLaunch: "true"
+          Value: Logstash
