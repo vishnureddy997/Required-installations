@@ -6,3 +6,13 @@ sudo apt update
  sudo apt install jenkins
  sudo systemctl start jenkins
  sudo systemctl status jenkins
+ 
+ 
+ 
+ 
+ change port number
+ 
+ sudo systemctl edit jenkins
+ 
+ [Service]
+Environment="JENKINS_PORT=8081"
