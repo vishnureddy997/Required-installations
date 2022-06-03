@@ -41,9 +41,8 @@ systemctl restart containerd
  systemctl daemon-reload
 systemctl enable kubelet.service
 
-systemctl enable kubelet.service
-
 systemctl restart containerd
+
   In Master and worker machines
 
 
