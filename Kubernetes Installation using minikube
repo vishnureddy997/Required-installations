@@ -1,0 +1,29 @@
+step1: sudo apt-get update
+step2: sudo apt-get install docker.io
+step3: sudo systemctl enable docker
+step4: curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
+step5: sudo apt-get install curl
+step6: sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+step7: sudo apt-get install kubeadm kubelet kubectl
+step8: sudo apt-mark hold kubeadm kubelet kubectl
+
+
+Minikube:
+sudo groupadd docker
+sudo apt-get update -y
+sudo apt-get upgrade -y
+sudo apt-get install curl
+sudo apt-get install apt-transport-https
+curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+chmod +x minikube
+mv ./minikube /usr/local/bin/minikube
+sudo usermod -aG docker $USER & newgrp docker
+minikube start --driver=docker
+
+Helm installation : 
+wget https://get.helm.sh/helm-v3.4.1-linux-amd64.tar.gz
+tar xvf helm-v3.4.1-linux-amd64.tar.gz
+sudo mv linux-amd64/helm /usr/local/bin
+rm helm-v3.4.1-linux-amd64.tar.gz
+rm -rf linux-amd64
+helm version
