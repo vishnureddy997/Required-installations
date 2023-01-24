@@ -46,7 +46,7 @@ Exexcute above all the commands in both master and slave machines
 
 Instialisoing the kubeadm ==============   ( Master machine )
 
-sudo kubeadm init
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16
 
 
 If master is not ready the execute the below commands 
