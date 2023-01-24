@@ -53,4 +53,13 @@ If master is not ready the execute the below commands
 
 kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/v0.20.2/Documentation/kube-flannel.yml
 
+Then In master enter 
+
+kubeadm token create --print-join-command ( After getting the token paste that token in node or slave machine )
+
+
+
+
+
+
 
