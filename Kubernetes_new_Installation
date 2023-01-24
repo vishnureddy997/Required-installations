@@ -1,6 +1,6 @@
 sudo apt-get update
 
-sudo apt install apt-transport-https curl
+sudo apt install apt-transport-https curl -y
 
 Install containered ( Docker-Engine- docker ) ====================
 
@@ -32,7 +32,7 @@ curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add
 
 sudo apt-add-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
 
-sudo apt install kubeadm kubelet kubectl kubernetes-cni
+sudo apt install kubeadm kubelet kubectl kubernetes-cni -y
 
 Disable swapp ========================
 
@@ -51,6 +51,6 @@ sudo kubeadm init
 
 If master is not ready the execute the below commands 
 
-kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/v0.20.2/Documentation/kube-flannel.yml
 
 
