@@ -1,0 +1,48 @@
+import boto3
+
+# Create a session to connect to the AWS account
+session = boto3.Session(
+    aws_access_key_id='<ACCESS_KEY_ID>',
+    aws_secret_access_key='<SECRET_ACCESS_KEY>',
+    region_name='<REGION_NAME>'
+)
+
+# Create a VPC resource
+vpc = session.resource('ec2').Vpc('<VPC_ID>')
+
+# Create a public subnet
+public_subnet = vpc.create_subnet(CidrBlock='10.0.1.0/24', VpcId='<VPC_ID>')
+
+# Create an EC2 instance for the public subnet
+public_instance = session.resource('ec2').create_instances(
+    ImageId='<IMAGE_ID>',
+    InstanceType='t2.micro',
+    MinCount=1,
+    MaxCount=1,
+    SubnetId=public_subnet.id,
+    SecurityGroups=['<SECURITY_GROUP_ID>'],
+    UserData='''#!/bin/bash
+        sudo apt-get update
+        sudo apt-get install -y nginx
+        sudo systemctl start nginx
+        sudo systemctl enable nginx'''
+)
+
+# Create a private subnet
+private_subnet = vpc.create_subnet(CidrBlock='10.0.2.0/24', VpcId='<VPC_ID>')
+
+# Create an EC2 instance for the private subnet
+private_instance = session.resource('ec2').create_instances(
+    ImageId='<IMAGE_ID>',
+    InstanceType='t2.micro',
+    MinCount=1,
+    MaxCount=1,
+    SubnetId=private_subnet.id,
+    SecurityGroups=['<SECURITY_GROUP_ID>'],
+    UserData='''#!/bin/bash
+        sudo apt-get update
+        sudo apt-get install -y default-jdk
+        sudo apt-get install -y mysql-server
+        sudo systemctl start mysql
+        sudo systemctl enable mysql'''
+)
