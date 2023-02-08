@@ -1,0 +1,82 @@
+1) Create RedHat 3 Servers (1-AnsibleServer , 2- Host Machines for demo) in AWS.
+ 
+
+2) Login As a root user and create ansible user and provide sudo access in all Servers.
+
+    2.1) Create the user ansible and set the password on all hosts:
+           sudo useradd ansible
+           sudo passwd ansible
+     
+    2.2) Make the necessary entry in sudoers file /etc/sudoersfor ansible        
+           user for password-less sudo access:
+          
+           visudo
+
+           ansible ALL=(ALL) NOPASSWD: ALL
+
+       
+
+    2.3) Make the necessary changes  in sshd_config file /etc/ssh/sshd_config    
+           to enable password based authentication.
+
+         Un comment PasswordAuthentication yes
+         and comment  PasswordAuthentication no.
+         And save the file .
+
+            vi /etc/ssh/sshd_config
+
+     2.4)    Then restart sshd service.
+                sudo service sshd restart
+
+
+
+#####################################
+
+
+ Install Ansible in Red hat (Ansible Server)
+=============================================================================
+
+1)     SSH to Redhat System & Switch to ansible user
+       sudo su - ansible
+      
+2)     Install python
+       sudo yum install python3 -y
+      
+3)    Update python alaternatives
+       sudo alternatives --set python /usr/bin/python3
+      
+4)    Verify Python Version
+         python --version
+ 
+5)    Install ansible using Yum 
+sudo yum -y install ansible
+      
+6)    Verify Ansible version
+       ansible --version
+       
+       
+#####################################
+
+
+Update Host Inventory in Ansible Server to add host servers’ details.
+
+1)    Add Host Server details
+
+ 
+
+vi  /etc/ansible/hosts
+
+ 
+
+# Connect using username and password
+
+192.168.1.105 ansible_user=ansible ansible_password=password
+
+###########################
+
+
+2)    Use ping module to test Ansible and after successful run you can see the below output. 
+
+ 
+
+          ansible all -m ping
