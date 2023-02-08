@@ -1,0 +1,63 @@
+version: '3'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.2
+    environment:
+      - discovery.type=single-node
+    ports:
+      - 9200:9200
+      - 9300:9300
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.10.2
+    volumes:
+      - ./logstash.conf:/usr/share/logstash/pipeline/logstash.conf:ro
+    ports:
+      - 5044:5044
+    environment:
+      - xpack.monitoring.enabled=false
+      - xpack.security.enabled=false
+    depends_on:
+      - elasticsearch
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.10.2
+    ports:
+      - 5601:5601
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - xpack.security.enabled=false
+    depends_on:
+      - elasticsearch
+
+volumes:
+  esdata:
+
+
+
+
+logstash.conf file 
+input {
+  file {
+    path => "/path/to/logs/*.log"
+    start_position => "beginning"
+  }
+}
+
+filter {
+  grok {
+    match => { "message" => "%{TIMESTAMP_ISO8601:timestamp} %{LOGLEVEL:loglevel} %{GREEDYDATA:message}" }
+  }
+  date {
+    match => [ "timestamp", "ISO8601" ]
+  }
+}
+
+output {
+  elasticsearch {
+    hosts => "elasticsearch:9200"
+    index => "logstash-%{+YYYY.MM.dd}"
+  }
+}
+
+
