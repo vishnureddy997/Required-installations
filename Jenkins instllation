@@ -8,7 +8,7 @@ sudo apt update
  sudo systemctl status jenkins
  
  
- 
+ After suceesful completion check with IPaddress:8080
  
  change port number
  
